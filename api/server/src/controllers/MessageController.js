@@ -1,5 +1,4 @@
-import express from 'express';
-import socket from 'socket.io';
+// import express from 'express';
 
 import MessageService from '../services/MessageService';
 import Util from '../utils/Utils';
@@ -7,9 +6,9 @@ import Util from '../utils/Utils';
 const util = new Util();
 
 class MessageController {
-    constructor(io) {
-        this.io = io;
-    }
+    // constructor() {
+    //
+    // }
 
     getAllMessages = async(req, res) => {
         try {
@@ -27,7 +26,9 @@ class MessageController {
     };
 
     addMessage = async (req, res) => {
-        console.log("333333", this.io)
+        const io = req.app.get('socketio')
+        console.log(io)
+
         // console.log(req.body);
         if (!req.body.text || !req.body.user) {
             util.setError(400, 'Please provide complete details');
@@ -37,7 +38,7 @@ class MessageController {
         try {
             const createdMessage = await MessageService.addMessage(newMessage);
             util.setSuccess(201, 'Message Added!', createdMessage);
-            this.io.emit('SERVER:NEW_MESSAGE', createdMessage);
+            io.emit('SERVER:NEW_MESSAGE', createdMessage);
             return util.send(res);
 
         } catch (error) {
@@ -47,6 +48,7 @@ class MessageController {
     };
 
     updatedMessage = async (req, res) => {
+        const io = req.app.get('socketio')
         const alteredMessage = req.body;
         const { id } = req.params;
         if (!Number(id)) {
@@ -60,6 +62,7 @@ class MessageController {
             } else {
                 util.setSuccess(200, 'Message updated', updateMessage);
             }
+            io.emit('SERVER:NEW_MESSAGE', updateMessage);
             return util.send(res);
         } catch (error) {
             util.setError(404, error);
@@ -68,6 +71,7 @@ class MessageController {
     };
 
     getAMessage = async (req, res) => {
+        const io = req.app.get('socketio');
         const { id } = req.params;
 
         if (!Number(id)) {
@@ -83,6 +87,7 @@ class MessageController {
             } else {
                 util.setSuccess(200, 'Found Message', theMessage);
             }
+            io.emit('SERVER:NEW_MESSAGE', theMessage);
             return util.send(res);
         } catch (error) {
             util.setError(404, error);
@@ -91,6 +96,7 @@ class MessageController {
     };
 
     deleteMessage = async (req, res) => {
+        const io = req.app.get('socketio');
         const { id } = req.params;
 
         if (!Number(id)) {
@@ -99,9 +105,11 @@ class MessageController {
         }
 
         try {
-            const testToDelete = await MessageService.deleteMessage(id);
+            const messageToDelete = await MessageService.deleteMessage(id);
 
-            if (testToDelete) {
+            //How to use socket in delete controller?
+            // io.emit('SERVER:NEW_MESSAGE', id);
+            if (messageToDelete) {
                 util.setSuccess(200, 'Message deleted');
             } else {
                 util.setError(404, `Message with the id ${id} cannot be found`);
