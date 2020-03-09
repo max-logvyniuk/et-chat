@@ -17,9 +17,9 @@ module.exports = {
   },
 
   test: {
-    database: 'school',
+    database: 'db_chat',
     username: 'postgres',
-    password: null,
+    password: process.env.DB_PASS,
     host: '127.0.0.1',
     dialect: 'postgres'
   },
