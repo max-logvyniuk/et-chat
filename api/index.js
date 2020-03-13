@@ -1,25 +1,31 @@
 import config from 'dotenv';
 import express from 'express';
 import bodyParser from 'body-parser';
-import testRoutes from './server/src/routes/TestRoutes';
+import { createServer } from 'http';
+
+import appRoutes from './server/src/routes/AppRoutes';
+import createSocket from './server/src/core/socket'
 
 config.config();
 
 const app = express();
+const http = createServer(app);
+const io = createSocket(http);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const port = process.env.PORT || 8000;
 
-app.use('/api/v1/test', testRoutes);
+app.set('socketio', io);
+app.use('/api', appRoutes);
 
 // when a random route is inputed
 app.get('*', (request, response) => response.status(200).send({
     message: 'Welcome to this API.',
 }));
 
-app.listen(port, () => {
+http.listen(port, () => {
     console.log(`Server is running on PORT ${port}`);
 });
 
