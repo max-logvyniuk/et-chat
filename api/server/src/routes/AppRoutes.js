@@ -13,8 +13,10 @@ router.route('test/:id')
     .put(TestController.updatedTest)
     .delete(TestController.deleteTest);
 
+router.route('/messages')
+  .get(MessageController.getAllMessages);
+
 router.route('/message')
-  .get(MessageController.getAllMessages)
   .post(MessageController.addMessage);
 
 router.route('/message/:id')

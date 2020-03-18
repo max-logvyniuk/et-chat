@@ -8,17 +8,17 @@ const util = new Util();
 class MessageController {
 
     static async getAllMessages(request, response) {
-      console.log(response);
         try {
             const allMessages = await MessageService.getAllMessages();
-            console.log(allMessages);
+            // console.log(allMessages);
             if (allMessages.length > 0) {
                 util.setSuccess(200, 'Messages retrieved', allMessages);
             } else {
-                util.setSuccess(200, 'No test found');
+                util.setSuccess(200, 'No messages found');
             }
-            return util.send(response);
+          return util.send(response);
         } catch (error) {
+          console.log(error);
             util.setError(400, error);
             return util.send(response);
         }
@@ -26,10 +26,8 @@ class MessageController {
 
     static async addMessage(request, response) {
         const io = request.app.get('socketio');
-        // console.log(io)
-      console.log(request.body)
-
-        // console.log(request.body);
+        // console.log('1111111111111111', io)
+      console.log('Data from fetch', request.body)
         if (!request.body.text || !request.body.user) {
             util.setError(400, 'Please provide complete details');
             return util.send(response);
@@ -48,7 +46,7 @@ class MessageController {
     };
 
     static async updatedMessage(request, response) {
-        const io = request.app.get('socketio')
+        const io = request.app.get('socketio');
         const alteredMessage = request.body;
         const { id } = request.params;
         if (!Number(id)) {

@@ -2,7 +2,14 @@ import database from '../models';
 
 class MessageService {
     static async getAllMessages() {
-            return database.Message.findAll();
+            return database.Message.findAll(
+              // {
+              // include: {
+              //   model: User,
+              //   as: 'userData'
+              //   },
+              // }
+            );
     }
 
     static async addMessage(newMessage) {

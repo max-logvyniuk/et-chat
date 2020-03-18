@@ -11,6 +11,9 @@ module.exports = {
         type: Sequelize.STRING
       },
       user: {
+        type: Sequelize.INTEGER
+      },
+      attachments: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -23,6 +26,7 @@ module.exports = {
       }
     });
   },
+
   down: (queryInterface) => {
     return queryInterface.dropTable('Messages');
   }
