@@ -3,12 +3,12 @@ import database from '../models';
 class MessageService {
     static async getAllMessages() {
             return database.Message.findAll(
-              // {
-              // include: {
-              //   model: User,
-              //   as: 'userData'
-              //   },
-              // }
+              {
+              include: {
+                model: database.User,
+                as: 'userData'
+                },
+              }
             );
     }
 

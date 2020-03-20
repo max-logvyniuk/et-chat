@@ -14,9 +14,13 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {         // Message belongsTo User 1:1
-          model: 'User',
+          model: 'Users',
           key: 'id'
         }
+      },
+      UserId: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       attachments: {
         type: Sequelize.STRING

@@ -10,7 +10,7 @@ class MessageController {
     static async getAllMessages(request, response) {
         try {
             const allMessages = await MessageService.getAllMessages();
-            // console.log(allMessages);
+            console.log('All messages ---', allMessages);
             if (allMessages.length > 0) {
                 util.setSuccess(200, 'Messages retrieved', allMessages);
             } else {
