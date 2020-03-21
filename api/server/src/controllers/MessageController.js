@@ -10,7 +10,7 @@ class MessageController {
     static async getAllMessages(request, response) {
         try {
             const allMessages = await MessageService.getAllMessages();
-            console.log('All messages ---', allMessages);
+            // console.info('All messages ---', allMessages);
             if (allMessages.length > 0) {
                 util.setSuccess(200, 'Messages retrieved', allMessages);
             } else {
@@ -28,7 +28,9 @@ class MessageController {
         const io = request.app.get('socketio');
         // console.log('1111111111111111', io)
       console.log('Data from fetch', request.body)
-        if (!request.body.text || !request.body.user) {
+        if (!request.body.text
+        //  || !request.body.user
+        ) {
             util.setError(400, 'Please provide complete details');
             return util.send(response);
         }

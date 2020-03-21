@@ -1,9 +1,11 @@
+import Sequelize from 'sequelize';
 import database from '../models';
 
 class MessageService {
     static async getAllMessages() {
             return database.Message.findAll(
               {
+              order: Sequelize.col('createdAt'),
               include: {
                 model: database.User,
                 as: 'userData'

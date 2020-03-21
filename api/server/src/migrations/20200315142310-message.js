@@ -10,16 +10,8 @@ module.exports = {
       text: {
         type: Sequelize.STRING
       },
-      user: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {         // Message belongsTo User 1:1
-          model: 'Users',
-          key: 'id'
-        }
-      },
       UserId: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       attachments: {
