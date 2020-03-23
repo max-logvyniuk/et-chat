@@ -27,7 +27,7 @@ class MessageController {
     static async addMessage(request, response) {
         const io = request.app.get('socketio');
         // console.log('1111111111111111', io)
-      console.log('Data from fetch', request.body)
+      // console.log('Data from fetch', request.body)
         if (!request.body.text
         //  || !request.body.user
         ) {
@@ -51,6 +51,9 @@ class MessageController {
         const io = request.app.get('socketio');
         const alteredMessage = request.body;
         const { id } = request.params;
+
+        console.info('Neeeeeeeeeew', alteredMessage);
+        // console.info('upppppppppppppppp', id);
         if (!Number(id)) {
             util.setError(400, 'Please input a valid numeric value');
             return util.send(response);
@@ -62,7 +65,7 @@ class MessageController {
             } else {
                 util.setSuccess(200, 'Message updated', updateMessage);
             }
-            io.emit('SERVER:NEW_MESSAGE', updateMessage);
+            io.emit('SERVER:UPDATE_MESSAGE', updateMessage);
             return util.send(response);
         } catch (error) {
             util.setError(404, error);
@@ -71,7 +74,7 @@ class MessageController {
     };
 
     static async getMessageById(request, response) {
-        console.log(request);
+        // console.log(request);
 
       const io = request.app.get('socketio');
         const { id } = request.params;
@@ -109,7 +112,7 @@ class MessageController {
         try {
             const messageToDelete = await MessageService.deleteMessage(id);
 
-            io.emit('SERVER:NEW_MESSAGE', id);
+            io.emit('SERVER:REMOVE_MESSAGE', id);
             if (messageToDelete) {
                 util.setSuccess(200, 'Message deleted');
             } else {
