@@ -12,7 +12,7 @@ const environment = process.env.NODE_ENV || 'development';
 
 const config = configJson[environment];
 
-console.log('this is the environment:', environment);
+// console.log('this is the config', config);
 
 const database = {};
 

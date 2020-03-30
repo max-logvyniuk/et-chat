@@ -9,9 +9,28 @@ module.exports = {
   // },
 
   development: {
+    amqp: {
+      protocol: 'amqp',
+      hostname: 'localhost',
+      port: 5672,
+      // port: 8080,
+      username: 'guest',
+      password: 'guest',
+      locale: 'en_US',
+      frameMax: 1000,
+      heartbeat: 0,
+      vhost: '/',
+    },
+    queue: 'nodemailer-amqp',
+    emailName: process.env.EMAIL_NAME,
+    emailPass: process.env.EMAIL_PASS,
+    portMailer: process.env.PORT_MAILER,
+    hostMailer:process.env.HOST_MAILER,
+    serverUserId:Number(process.env.SERVER_USER_ID),
     database: process.env.DB_NAME,
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
+    port: process.env.DB_PORT,
     host: process.env.DB_HOST,
     dialect: 'postgres'
   },
