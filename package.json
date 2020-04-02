@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec babel-node ./api/index.js",
-    "start": "nodemon ./api/index.js",
+    "start": "nodemon --exec babel-node ./api/index.js",
     "fix": "eslint . --fix",
     "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,6 +14,7 @@
   "author": "ET",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "~7.8.7",
     "amqplib": "^0.5.5",
     "body-parser": "~1.19.0",
     "cors": "^2.8.5",
