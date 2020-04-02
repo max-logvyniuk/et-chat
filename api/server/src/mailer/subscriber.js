@@ -10,7 +10,7 @@ const config = configJson[environment];
 const emails = ["maroon4m@gmail.com"];
 
 async function sendEmailMessage(data) {
-  console.info('In mailer', data);
+  // console.info('In mailer', data);
   // Setup Nodemailer transport
   // const testAccount = await nodemailer.createTestAccount();
   const transport = nodemailer.createTransport({
