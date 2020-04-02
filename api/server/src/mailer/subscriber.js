@@ -32,6 +32,7 @@ async function sendEmailMessage(data) {
     to: 'maroon4m@gmail.com'
   });
 
+
   // Create connection to AMQP server
   amqp.connect(config.amqp, function connectCallback(error0, connection) {
    if (error0) {
