@@ -33,7 +33,7 @@ async function sendEmailMessage(data) {
   });
 
   // Create connection to AMQP server
-  amqp.connect('amqp://guest:guest@localhost:5672', function connectCallback(error0, connection) {
+  amqp.connect(config.amqp, function connectCallback(error0, connection) {
    if (error0) {
      console.error('error0', error0.stack);
      return error0;
