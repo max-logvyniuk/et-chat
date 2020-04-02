@@ -54,3 +54,6 @@ node_modules
 .gradle
 build/nodejs
 build/yarn
+
+#.env.development
+.env.development

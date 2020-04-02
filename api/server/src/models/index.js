@@ -9,7 +9,7 @@ import configJson from '../config/config';
 
 const basename = path.basename(__filename);
 const environment = process.env.NODE_ENV || 'development';
-
+console.info('env', environment);
 const config = configJson[environment];
 
 // console.log('this is the config', config);
@@ -18,8 +18,16 @@ const database = {};
 
 let sequelize;
 if (config.environment === 'production') {
-  sequelize = new Sequelize(config.databaseUrl);
-  // sequelize = new Sequelize(process.env[config.databaseUrl], config);
+  sequelize = new Sequelize(config.databaseUrl,
+    {
+      dialect: 'postgres',
+      protocol: 'postgres',
+      dialectOption: {
+        ssl: true,
+        native: true,
+      },
+    });
+  // sequelize = new Sequelize(process.env[config.use_env_variable], config);
   // sequelize = new Sequelize(
   //   process.env.DB_NAME,
   //   process.env.DB_USER,
@@ -36,12 +44,21 @@ if (config.environment === 'production') {
   //   },
   // );
 } else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config,
-  );
+  // sequelize = new Sequelize(
+  //   config.database,
+  //   config.username,
+  //   config.password,
+  //   config,
+  // );
+  sequelize = new Sequelize(config.databaseUrl,
+    {
+      dialect: 'postgres',
+      protocol: 'postgres',
+      dialectOption: {
+        ssl: true,
+        native: true,
+      },
+    });
 }
 
 forEach(
