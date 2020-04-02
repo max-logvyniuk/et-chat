@@ -51,6 +51,7 @@ module.exports = {
     portMailer: process.env.PORT_MAILER,
     hostMailer:process.env.HOST_MAILER,
     serverUserId:Number(process.env.SERVER_USER_ID),
+    databaseUrl: process.env.DATABASE_URL,
     database: process.env.DB_NAME,
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
