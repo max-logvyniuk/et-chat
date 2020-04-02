@@ -1,7 +1,10 @@
-// import express from 'express';
-
 import MessageService from '../services/MessageService';
 import Util from '../utils/Utils';
+import sendEmailMessage from '../mailer/subscriber';
+import configJson from "../config/config";
+
+const environment = process.env.NODE_ENV || 'development';
+const config = configJson[environment];
 
 const util = new Util();
 
@@ -26,8 +29,7 @@ class MessageController {
 
     static async addMessage(request, response) {
         const io = request.app.get('socketio');
-        // console.log('1111111111111111', io)
-      // console.log('Data from fetch', request.body)
+
         if (!request.body.text
         //  || !request.body.user
         ) {
@@ -35,10 +37,16 @@ class MessageController {
             return util.send(response);
         }
         const newMessage = request.body;
+        // Send data to mailer
+        if(newMessage.UserId === config.serverUserId) {
+          await sendEmailMessage(newMessage);
+        }
+        console.info('newMessage.UserId =', typeof (newMessage.UserId));
         try {
             const createdMessage = await MessageService.addMessage(newMessage);
             util.setSuccess(201, 'Message Added!', createdMessage);
             io.emit('SERVER:NEW_MESSAGE', createdMessage);
+
             return util.send(response);
 
         } catch (error) {
@@ -52,8 +60,8 @@ class MessageController {
         const alteredMessage = request.body;
         const { id } = request.params;
 
-        console.info('Neeeeeeeeeew', alteredMessage);
-        // console.info('upppppppppppppppp', id);
+        // console.info('alteredMessage!', alteredMessage);
+        // console.info('Id', id);
         if (!Number(id)) {
             util.setError(400, 'Please input a valid numeric value');
             return util.send(response);
@@ -112,12 +120,14 @@ class MessageController {
         try {
             const messageToDelete = await MessageService.deleteMessage(id);
 
-            io.emit('SERVER:REMOVE_MESSAGE', id);
+            // io.emit('SERVER:REMOVE_MESSAGE', id);
             if (messageToDelete) {
                 util.setSuccess(200, 'Message deleted');
             } else {
                 util.setError(404, `Message with the id ${id} cannot be found`);
             }
+            // console.info('Delete IO', io.emit('SERVER:REMOVE_MESSAGE', id));
+            io.emit('SERVER:REMOVE_MESSAGE', id);
             return util.send(response);
         } catch (error) {
             util.setError(400, error);

@@ -9,12 +9,12 @@ const createSocket = (http) => {
       io.on('SERVER:NEW_MESSAGE', function messageSocket(message) {
         io.emit('SERVER:NEW_MESSAGE', message)
       });
-      io.on('SERVER:REMOVE_MESSAGE', function messageSocket(message) {
-        io.emit('SERVER:REMOVE_MESSAGE', message)
-      });
       io.on('SERVER:UPDATE_MESSAGE', function messageSocket(message) {
         io.emit('SERVER:UPDATE_MESSAGE', message)
-      })
+      });
+      io.on('SERVER:REMOVE_MESSAGE', function messageSocket(messageI) {
+        io.emit('SERVER:REMOVE_MESSAGE', messageI)
+      });
     });
     return io;
 };
