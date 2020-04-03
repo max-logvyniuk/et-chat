@@ -25,9 +25,9 @@ async function sendEmailMessage(data) {
       clientSecret: config.mailerClientSecret,
       refreshToken: config.mailerRefreshToken,
       // accessToken: config.mailerAccessToken,
-      // expires: 1569348590870 + 60000000,
+      // expires: 1569348590870 + 600000,
       // pass: config.emailPass,
-      // accessUrl: config.mailerAccessUrl,
+      accessUrl: config.mailerAccessUrl,
     },
 
     // Security options to disallow using attachments from file or URL
