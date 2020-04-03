@@ -10,17 +10,24 @@ const config = configJson[environment];
 const emails = ["maroon4m@gmail.com"];
 
 async function sendEmailMessage(data) {
-  // console.info('In mailer', data);
+  // console.info('sendEmailMessage', data);
   // Setup Nodemailer transport
   // const testAccount = await nodemailer.createTestAccount();
   const transport = nodemailer.createTransport({
-    host: config.hostMailer,
-    port: config.portMailer,
+    // host: config.hostMailer,
+    // port: config.portMailer,
     secure: false, // true for 465, false for other ports
     service: "Gmail",
     auth: {
       user: config.emailName,
-      pass: config.emailPass
+      pass: config.emailPass,
+      XOAuth2: {
+        user: config.emailName,
+        pass: config.emailPass,
+        clientId: config.mailerClientId,
+        clientSecret: config.mailerClientSecret,
+        refreshToken: config.mailerRefreshToken
+      }
     },
 
     // Security options to disallow using attachments from file or URL
