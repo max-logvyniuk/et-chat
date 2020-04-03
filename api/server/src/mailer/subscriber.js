@@ -19,15 +19,15 @@ async function sendEmailMessage(data) {
     secure: false, // true for 465, false for other ports
     service: "Gmail",
     auth: {
+      type: 'OAuth2',
       user: config.emailName,
-      pass: config.emailPass,
-      XOAuth2: {
-        user: config.emailName,
-        pass: config.emailPass,
-        clientId: config.mailerClientId,
-        clientSecret: config.mailerClientSecret,
-        refreshToken: config.mailerRefreshToken
-      }
+      clientId: config.mailerClientId,
+      clientSecret: config.mailerClientSecret,
+      refreshToken: config.mailerRefreshToken,
+      // accessToken: config.mailerAccessToken,
+      // expires: 1569348590870 + 60000000,
+      // pass: config.emailPass,
+      // accessUrl: config.mailerAccessUrl,
     },
 
     // Security options to disallow using attachments from file or URL
@@ -35,8 +35,8 @@ async function sendEmailMessage(data) {
     disableUrlAccess: true
   }, {
     // Default options for the message. Used if specific values are not set
-    from: 'sc.system.vn2020@gmail.com',
-    to: 'maroon4m@gmail.com'
+    from: config.emailName,
+    // to: 'maroon4m@gmail.com'
   });
 
   // Create connection to AMQP server
