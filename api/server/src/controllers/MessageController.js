@@ -1,4 +1,8 @@
+import isEmpty from 'lodash/isEmpty';
+
+import database from '../models';
 import MessageService from '../services/MessageService';
+// import UploadFileService from '../services/UploadFileService';
 import Util from '../utils/Utils';
 import sendEmailMessage from '../mailer/subscriber';
 import configJson from "../config/config";
@@ -30,26 +34,51 @@ class MessageController {
     static async addMessage(request, response) {
         const io = request.app.get('socketio');
 
-        if (!request.body.text
-        //  || !request.body.user
+        console.info('In new message', request.body);
+        if (
+          !request.body.UserId &&
+          isEmpty(request.body.text) &&
+          isEmpty(request.body.UploadFileId)
         ) {
             util.setError(400, 'Please provide complete details');
             return util.send(response);
         }
+
         const newMessage = request.body;
         // Send data to mailer
         if(newMessage.UserId === config.serverUserId) {
           await sendEmailMessage(newMessage);
         }
-        console.info('newMessage.UserId =', typeof (newMessage.UserId));
         try {
             const createdMessage = await MessageService.addMessage(newMessage);
+//
+//           console.info('Id updated File', request.body.UploadFileId);
+          // It works but not good
+          if (request.body.UploadFileId) {
+            const newMessageId = createdMessage.id;
+            const id = request.body.UploadFileId;
+            const uploadFileToUpdate = await database.UploadFile.findOne({
+              where: { id: Number(id) }
+            });
+            // console.info('Before Update File in message', uploadFileToUpdate);
+            // console.info('newMessageId', newMessageId);
+            await database.UploadFile.update(
+              // uploadFileToUpdate,
+              {MessageId: newMessageId},
+              {where: { id: Number(id)}
+              });
+            // console.info('Updated File in message', uploadFileToUpdate);
+            return uploadFileToUpdate
+          }
+//
             util.setSuccess(201, 'Message Added!', createdMessage);
+            // console.info('New message', createdMessage.id);
             io.emit('SERVER:NEW_MESSAGE', createdMessage);
 
             return util.send(response);
 
         } catch (error) {
+          console.info(error);
             util.setError(400, error.message);
             return util.send(response);
         }

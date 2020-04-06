@@ -35,7 +35,11 @@ module.exports = {
     password: process.env.DB_PASS,
     port: process.env.DB_PORT,
     host: process.env.DB_HOST,
-    dialect: 'postgres'
+    dialect: 'postgres',
+    cloudinaryMame:process.env.CLOUDINARY_NAME,
+    cloudinaryApiKey:process.env.CLOUDINARY_API_KEY,
+    cloudinaryApiSecret:process.env.CLOUDINARY_API_SECRET,
+
   },
 
   test: {
@@ -65,6 +69,9 @@ module.exports = {
     password: process.env.DB_PASS,
     port: process.env.DB_PORT,
     host: process.env.DB_HOST,
-    dialect: 'postgres'
+    dialect: 'postgres',
+    cloudinaryMame:process.env.CLOUDINARY_NAME,
+    cloudinaryApiKey:process.env.CLOUDINARY_API_KEY,
+    cloudinaryApiSecret:process.env.CLOUDINARY_API_SECRET,
   }
 };

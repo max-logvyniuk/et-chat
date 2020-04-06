@@ -1,6 +1,9 @@
 import { Router } from 'express';
+
+import multer from '../core/multer';
 import TestController from '../controllers/TestController';
-import MessageController from "../controllers/MessageController";
+import MessageController from '../controllers/MessageController';
+import UploadFileController from '../controllers/UploadFileController';
 
 const router = Router();
 
@@ -23,5 +26,9 @@ router.route('/message/:id')
   .get(MessageController.getMessageById)
   .put(MessageController.updatedMessage)
   .delete(MessageController.deleteMessage);
+
+router.route('/chat/files')
+  .post(multer.single('file'), UploadFileController.addUploadFile)
+  .delete(UploadFileController.deleteUploadFile);
 
 export default router;

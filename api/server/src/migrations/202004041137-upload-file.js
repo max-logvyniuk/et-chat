@@ -1,26 +1,31 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Messages', {
+    return queryInterface.createTable('UploadFiles', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      text: {
-        type: Sequelize.STRING,
-        allowNull: true,
+      filename: {
+        type: Sequelize.STRING
+      },
+      size: {
+        type: Sequelize.STRING
+      },
+      ext: {
+        type: Sequelize.STRING
+      },
+      url: {
+        type: Sequelize.STRING
       },
       UserId: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      UploadFileId: {
+      MessageId: {
         type: Sequelize.INTEGER,
         allowNull: true,
-      },
-      imageAttachment: {
-        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -34,6 +39,6 @@ module.exports = {
   },
 
   down: (queryInterface) => {
-    return queryInterface.dropTable('Messages');
+    return queryInterface.dropTable('UploadFiles');
   }
 };

@@ -40,7 +40,7 @@ async function sendEmailMessage(data) {
   });
 
   // Create connection to AMQP server
-  amqp.connect(config.amqp, function connectCallback(error0, connection) {
+  amqp.connect(config.amqp, { key: '8451070b-d9a6-47b5-bd8d-f99076c10c47' }, function connectCallback(error0, connection) {
    if (error0) {
      console.error('error0', error0.stack);
      return error0;

@@ -5,7 +5,11 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   User.associate = function (models) {
-    User.hasMany(models.Message, {as: 'userMessages'})
+    User.hasMany(models.Message, {as: 'userMessages'});
+    User.hasMany(models.UploadFile, {as: 'userUploadFiles'})
   };
+  // User.associate = function (models) {
+  //   User.hasMany(models.UploadFile, {as: 'userUploadFiles'})
+  // };
   return User;
 };
