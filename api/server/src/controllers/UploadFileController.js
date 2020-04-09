@@ -15,23 +15,27 @@ class UploadFileController {
         const file = request.file;
         try {
           cloudinary.v2.uploader
-            .upload_stream({ resource_type: "auto" }, async (error, result) => {
+            .upload_stream({ resource_type: "auto" },
+              async (error, result) => {
+
+              console.info('cloudinary result', result);
               if (error) {
                 console.info('ERRRR1', error);
                 throw new Error(error);
               }
 
               const fileData = {
-                filename: result.original_filename,
-                size: result.bytes,
                 ext: result.format,
+                filename: result.original_filename,
+                publicId: result.public_id,
+                size: result.bytes,
                 url: result.url,
                 UserId,
               };
 
               // console.info('fileData', fileData);
               const uploadFile = await UploadFileService.addUploadFile(fileData);
-              util.setSuccess(201, 'Message Added!', uploadFile);
+              util.setSuccess(201, 'File uploaded!', uploadFile);
 
               return util.send(response);
 
@@ -48,7 +52,6 @@ class UploadFileController {
   static async deleteUploadFile(request, response) {
     // const io = request.app.get('socketio');
     const { id } = request.params;
-
     if (!Number(id)) {
       util.setError(400, 'Please provide a numeric value');
       return util.send(response);
@@ -67,6 +70,7 @@ class UploadFileController {
       // io.emit('SERVER:REMOVE_MESSAGE', id);
       return util.send(response);
     } catch (error) {
+      console.info('Delete file error', error);
       util.setError(400, error);
       return util.send(response);
     }

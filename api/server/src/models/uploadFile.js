@@ -1,10 +1,13 @@
 module.exports = (sequelize, DataTypes) => {
   const UploadFile = sequelize.define('UploadFile', {
-    filename: DataTypes.STRING,
-    size: DataTypes.STRING,
     ext: DataTypes.STRING,
+    filename: DataTypes.STRING,
+    MessageId: DataTypes.STRING,
+    publicId: DataTypes.STRING,
+    size: DataTypes.STRING,
     url: DataTypes.STRING,
-    MessageId: DataTypes.STRING
+    UserId: DataTypes.STRING
+
   }, {});
 
 

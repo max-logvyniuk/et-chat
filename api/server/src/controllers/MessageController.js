@@ -53,11 +53,11 @@ class MessageController {
             const createdMessage = await MessageService.addMessage(newMessage);
 //
 //           console.info('Id updated File', request.body.UploadFileId);
-          // It works but not good
+//           It works but not good
           if (request.body.UploadFileId) {
             const newMessageId = createdMessage.id;
             const id = request.body.UploadFileId;
-            const uploadFileToUpdate = await database.UploadFile.findOne({
+            await database.UploadFile.findOne({
               where: { id: Number(id) }
             });
             // console.info('Before Update File in message', uploadFileToUpdate);
@@ -68,7 +68,7 @@ class MessageController {
               {where: { id: Number(id)}
               });
             // console.info('Updated File in message', uploadFileToUpdate);
-            return uploadFileToUpdate
+            // return uploadFileToUpdate
           }
 //
             util.setSuccess(201, 'Message Added!', createdMessage);

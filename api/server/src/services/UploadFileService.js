@@ -1,4 +1,5 @@
 import database from '../models';
+import cloudinary from '../core/cloudinary';
 
 
 class UploadFileService {
@@ -21,7 +22,17 @@ class UploadFileService {
   }
 
     static async deleteUploadFile(id) {
+            console.info('In service', id);
             const fileToDelete = await database.UploadFile.findOne({ where: { id: Number(id) } });
+            console.info('Voice message that will dell from cloudinary', fileToDelete);
+            const cloudinaryId = fileToDelete.publicId;
+            // toString(cloudinaryId);
+            console.info('Id DDDDDDDD', cloudinaryId);
+            await cloudinary.v2.api.delete_resources([`${cloudinaryId}`],
+             { type: 'upload' },
+             function(error, result) {
+              console.info('Result from cloudinary', result, error);
+            });
 
             if (fileToDelete) {
                 const deletedUploadFile = await database.UploadFile.destroy({

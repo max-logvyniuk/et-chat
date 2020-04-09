@@ -7,13 +7,20 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      ext: {
+        type: Sequelize.STRING
+      },
       filename: {
         type: Sequelize.STRING
+      },
+      MessageId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
       size: {
         type: Sequelize.STRING
       },
-      ext: {
+      publicId: {
         type: Sequelize.STRING
       },
       url: {
@@ -22,10 +29,6 @@ module.exports = {
       UserId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      MessageId: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
       },
       createdAt: {
         allowNull: false,
