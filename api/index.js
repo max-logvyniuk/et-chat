@@ -6,10 +6,14 @@ import cors from 'cors';
 
 import appRoutes from './server/src/routes/AppRoutes';
 import createSocket from './server/src/core/socket'
+import httpLogger from './server/src/logger/httpLogger';
 
 config.config();
 
 const app = express();
+if (process.env.NODE_ENV === 'development') {
+  app.use(httpLogger);
+}
 const http = createServer(app);
 const io = createSocket(http);
 

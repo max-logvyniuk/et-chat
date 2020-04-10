@@ -20,6 +20,7 @@ module.exports = {
     //   heartbeat: 0,
     //   vhost: '/',
     // },
+    environment:process.env.NODE_ENV,
     amqp: process.env.CLOUDAMQP_URL,
     queue: 'nodemailer-amqp',
     emailName: process.env.EMAIL_NAME,
@@ -51,6 +52,7 @@ module.exports = {
   },
 
   production: {
+    environment:process.env.NODE_ENV,
     amqp: process.env.CLOUDAMQP_URL,
     queue: 'nodemailer-amqp',
     emailName: process.env.EMAIL_NAME,

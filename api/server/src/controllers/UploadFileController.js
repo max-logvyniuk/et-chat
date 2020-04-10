@@ -9,8 +9,7 @@ class UploadFileController {
 
     static async addUploadFile(request, response) {
         // const io = request.app.get('socketio');
-      // console.info('Vooooooooo!!!', request);
-        // console.info('Vooooooooo!!!', request.file, request.headers);
+        // console.info('UploadFile header!!!', request.file, request.headers);
         const UserId = request.headers.userid;
         const file = request.file;
         try {
@@ -20,7 +19,7 @@ class UploadFileController {
 
               console.info('cloudinary result', result);
               if (error) {
-                console.info('ERRRR1', error);
+                console.info('ERROR1', error);
                 throw new Error(error);
               }
 
@@ -66,8 +65,6 @@ class UploadFileController {
       } else {
         util.setError(404, `UploadFile with the id ${id} cannot be found`);
       }
-      // console.info('Delete IO', io.emit('SERVER:REMOVE_MESSAGE', id));
-      // io.emit('SERVER:REMOVE_MESSAGE', id);
       return util.send(response);
     } catch (error) {
       console.info('Delete file error', error);

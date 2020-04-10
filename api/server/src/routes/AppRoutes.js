@@ -4,6 +4,7 @@ import multer from '../core/multer';
 import TestController from '../controllers/TestController';
 import MessageController from '../controllers/MessageController';
 import UploadFileController from '../controllers/UploadFileController';
+import UserController from '../controllers/UserController';
 
 const router = Router();
 
@@ -15,6 +16,15 @@ router.route('/test/:id')
     .get(TestController.getATest)
     .put(TestController.updatedTest)
     .delete(TestController.deleteTest);
+
+router.route('/user')
+  .get(UserController.getAllUsers)
+  .post(UserController.addUser);
+
+router.route('/user/:id')
+  .get(UserController.getUserById)
+  .put(UserController.updatedUser)
+  .delete(UserController.deleteUser);
 
 router.route('/messages')
   .get(MessageController.getAllMessages);

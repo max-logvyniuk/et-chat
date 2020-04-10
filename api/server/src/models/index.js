@@ -44,21 +44,12 @@ if (config.environment === 'production') {
   //   },
   // );
 } else {
-  // sequelize = new Sequelize(
-  //   config.database,
-  //   config.username,
-  //   config.password,
-  //   config,
-  // );
-  sequelize = new Sequelize(config.databaseUrl,
-    {
-      dialect: 'postgres',
-      protocol: 'postgres',
-      dialectOption: {
-        ssl: true,
-        native: true,
-      },
-    });
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    config,
+  );
 }
 
 forEach(

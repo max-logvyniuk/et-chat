@@ -51,9 +51,7 @@ class MessageController {
         }
         try {
             const createdMessage = await MessageService.addMessage(newMessage);
-//
-//           console.info('Id updated File', request.body.UploadFileId);
-//           It works but not good
+//          console.info('Id updated File', request.body.UploadFileId);
           if (request.body.UploadFileId) {
             const newMessageId = createdMessage.id;
             const id = request.body.UploadFileId;
@@ -68,9 +66,7 @@ class MessageController {
               {where: { id: Number(id)}
               });
             // console.info('Updated File in message', uploadFileToUpdate);
-            // return uploadFileToUpdate
           }
-//
             util.setSuccess(201, 'Message Added!', createdMessage);
             // console.info('New message', createdMessage.id);
             io.emit('SERVER:NEW_MESSAGE', createdMessage);
@@ -148,7 +144,6 @@ class MessageController {
 
         try {
             const messageToDelete = await MessageService.deleteMessage(id);
-
             // io.emit('SERVER:REMOVE_MESSAGE', id);
             if (messageToDelete) {
                 util.setSuccess(200, 'Message deleted');
