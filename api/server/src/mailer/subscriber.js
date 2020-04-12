@@ -9,6 +9,10 @@ const config = configJson[environment];
 // Array of email users. Will use email from users table
 const emails = ["maroon4m@gmail.com"];
 
+const mailStyle = {
+  display: "table"
+};
+
 async function sendEmailMessage(data) {
   // console.info('sendEmailMessage', data);
   // Setup Nodemailer transport
@@ -40,7 +44,8 @@ async function sendEmailMessage(data) {
   });
 
   // Create connection to AMQP server
-  amqp.connect(config.amqp, { key: '8451070b-d9a6-47b5-bd8d-f99076c10c47' }, function connectCallback(error0, connection) {
+  // { key: '8451070b-d9a6-47b5-bd8d-f99076c10c47' },
+  amqp.connect(config.amqp, function connectCallback(error0, connection) {
    if (error0) {
      console.error('error0', error0.stack);
      return error0;
@@ -61,6 +66,10 @@ async function sendEmailMessage(data) {
           console.error('error2',error2.stack);
           return error2;
         }
+        channel.sendToQueue(config.queue, Buffer.from(`${data}`), {
+          persistent: true
+        });
+
         console.info('channel.assertQueue!', config.queue);
         channel.prefetch(1);
 
@@ -79,6 +88,7 @@ async function sendEmailMessage(data) {
       console.info('In emails', emails);
       // const message = securitySystemMessage.text.toString();
       const message = data.text.toString();
+      const image = data.imageAttachment.toString();
 
       // Send the message using the previously set up Nodemailer transport
       transport.sendMail({
@@ -86,7 +96,10 @@ async function sendEmailMessage(data) {
         to: emails, // list of receivers
         subject: message, // Subject line
         text: `${message}`, // plain text body
-        html: `<b>${message}</b>` // html body
+        html: `<div style={${mailStyle}}>
+                 <p>${message}</p>
+                 <img src="${image}"/>
+               </div>` // html body
       }, function(error3, info) {
         console.info('Send to email', message);
         if (error3) {

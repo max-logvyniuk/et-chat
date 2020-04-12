@@ -34,7 +34,7 @@ class MessageController {
     static async addMessage(request, response) {
         const io = request.app.get('socketio');
 
-        console.info('In new message', request.body);
+        // console.info('In new message', request.body);
         if (
           !request.body.UserId &&
           isEmpty(request.body.text) &&
@@ -46,7 +46,9 @@ class MessageController {
 
         const newMessage = request.body;
         // Send data to mailer
-        if(newMessage.UserId === config.serverUserId) {
+        console.info('Mailer active', typeof newMessage.UserId, typeof config.serverUserId);
+        if(newMessage.UserId === `${config.serverUserId}`) {
+          console.info('Mailer active', newMessage.UserId, config.serverUserId);
           await sendEmailMessage(newMessage);
         }
         try {

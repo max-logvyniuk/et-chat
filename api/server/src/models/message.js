@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const Message = sequelize.define('Message', {
     UploadFileId: DataTypes.STRING,
     text: DataTypes.STRING,
-    imageAttachment: DataTypes.STRING
+    imageAttachment: DataTypes.STRING,
   }, {});
 
 
