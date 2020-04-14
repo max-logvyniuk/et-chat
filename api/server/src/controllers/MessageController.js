@@ -2,9 +2,8 @@ import isEmpty from 'lodash/isEmpty';
 
 import database from '../models';
 import MessageService from '../services/MessageService';
-// import UploadFileService from '../services/UploadFileService';
 import Util from '../utils/Utils';
-import sendEmailMessage from '../mailer/subscriber';
+import sendMessageToQueue from '../mailer/sendMessageToQueue';
 import configJson from "../config/config";
 
 const environment = process.env.NODE_ENV || 'development';
@@ -49,7 +48,14 @@ class MessageController {
         console.info('Mailer active', typeof newMessage.UserId, typeof config.serverUserId);
         if(newMessage.UserId === `${config.serverUserId}`) {
           console.info('Mailer active', newMessage.UserId, config.serverUserId);
-          await sendEmailMessage(newMessage);
+          try {
+            await sendMessageToQueue(newMessage);
+          }
+          catch (error) {
+            console.info(error);
+            util.setError(400, error.message);
+            return util.send(response);
+          }
         }
         try {
             const createdMessage = await MessageService.addMessage(newMessage);

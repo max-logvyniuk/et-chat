@@ -14,7 +14,7 @@ class UserController {
     static async getAllUsers(request, response) {
         try {
             const allUsers = await UserService.getAllUsers();
-            // console.info('All messages ---', allUsers);
+            // console.info('All users ---', allUsers);
             if (allUsers.length > 0) {
                 util.setSuccess(200, 'Users retrieved', allUsers);
             } else {
