@@ -27,7 +27,7 @@ class UploadFileService {
             console.info('Voice message that will dell from cloudinary', fileToDelete);
             const cloudinaryId = fileToDelete.publicId;
             // toString(cloudinaryId);
-            console.info('Id DDDDDDDD', cloudinaryId);
+            console.info('Id cloudinaryId', cloudinaryId);
             await cloudinary.v2.api.delete_resources([`${cloudinaryId}`],
              { type: 'upload' },
              function(error, result) {

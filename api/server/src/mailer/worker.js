@@ -1,5 +1,6 @@
 import amqp from 'amqplib/callback_api';
 import nodemailer from 'nodemailer';
+import isEmpty from 'lodash/isEmpty';
 
 import configJson from '../config/config';
 import getAllUsersEmail from '../utils/helpers/getAllUsersEmail';
@@ -81,9 +82,18 @@ const startMailing = async () => {
             console.info('In emails', emails);
             const parseData = JSON.parse(data.content);
             const message = parseData.text.toString();
-            const image = parseData.imageAttachment.toString();
+            const image = parseData.imageAttachment ? parseData.imageAttachment.toString() : null;
             // const message = data.content.toString();
             // const image = data.content.toString();
+            console.info('Image in parseData', image);
+            const withImage = `<div style={${mailStyle}}>
+                                 <p>${message}</p>
+                                 <img src="${image}"/>
+                               </div>`;
+            const withoutImage = `<div style={${mailStyle}}>
+                                    <p>${message}</p>
+                                  </div>`;
+            const emailBody = !isEmpty(image) ? withImage : withoutImage;
 
             // Send the message using the previously set up Nodemailer transport
             transport.sendMail({
@@ -91,10 +101,7 @@ const startMailing = async () => {
               to: emails, // list of receivers
               subject: message, // Subject line
               text: `${message}`, // plain text body
-              html: `<div style={${mailStyle}}>
-                       <p>${message}</p>
-                       <img src="${image}"/>
-                     </div>` // html body
+              html: emailBody // html body
             }, function(error3, info) {
               console.info('Send to email', message);
               if (error3) {

@@ -1,6 +1,5 @@
 import UploadFileService from '../services/UploadFileService';
 import Util from '../utils/Utils';
-// import sendEmailUploadFile from '../mailer/subscriber';
 import cloudinary from '../core/cloudinary';
 
 const util = new Util();
@@ -8,8 +7,6 @@ const util = new Util();
 class UploadFileController {
 
     static async addUploadFile(request, response) {
-        // const io = request.app.get('socketio');
-        // console.info('UploadFile header!!!', request.file, request.headers);
         const UserId = request.headers.userid;
         const file = request.file;
         try {
@@ -42,14 +39,13 @@ class UploadFileController {
             .end(file.buffer);
 
         } catch (error) {
-          console.info('ERRRRR AudioFile', error);
+          console.info('ERROR AudioFile', error);
             util.setError(400, error.message);
             return util.send(response);
         }
     };
 
   static async deleteUploadFile(request, response) {
-    // const io = request.app.get('socketio');
     const { id } = request.params;
     if (!Number(id)) {
       util.setError(400, 'Please provide a numeric value');
@@ -58,8 +54,6 @@ class UploadFileController {
 
     try {
       const uploadFileToDelete = await UploadFileService.deleteUploadFile(id);
-
-      // io.emit('SERVER:REMOVE_MESSAGE', id);
       if (uploadFileToDelete) {
         util.setSuccess(200, 'UploadFile deleted');
       } else {

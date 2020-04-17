@@ -2,10 +2,6 @@ import isEmpty from 'lodash/isEmpty';
 
 import UserService from '../services/UserService';
 import Util from '../utils/Utils';
-// import configJson from "../config/config";
-
-// const environment = process.env.NODE_ENV || 'development';
-// const config = configJson[environment];
 
 const util = new Util();
 
