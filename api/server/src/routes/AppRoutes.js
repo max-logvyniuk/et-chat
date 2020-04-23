@@ -26,6 +26,9 @@ router.route('/user/:id')
   .put(UserController.updatedUser)
   .delete(UserController.deleteUser);
 
+router.route('/messages/page')
+  .get(MessageController.getPageOfMessages);
+
 router.route('/messages')
   .get(MessageController.getAllMessages);
 

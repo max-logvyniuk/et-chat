@@ -1,4 +1,5 @@
 import isEmpty from 'lodash/isEmpty';
+import paginate from 'jw-paginate';
 
 import database from '../models';
 import MessageService from '../services/MessageService';
@@ -12,6 +13,37 @@ const config = configJson[environment];
 const util = new Util();
 
 class MessageController {
+
+     static async getPageOfMessages(request, response) {
+        try {
+          const messagesArray = await MessageService.getAllMessages();
+          const allMessages = messagesArray.reverse();
+          // console.info('All messages ---', allMessages);
+          const page = parseInt(request.query.page, 10) || 1;
+
+          console.info('PAGE!', page);
+          const pageSize = Number(process.env.PAGE_SIZE);
+          const pager = paginate(allMessages.length, page, pageSize);
+
+          const pageOfMessages = allMessages.slice(pager.startIndex, pager.endIndex + 1);
+
+          pageOfMessages.reverse();
+
+          const messagePageToSend = { pager, pageOfMessages};
+          console.info('Page of messages', messagePageToSend);
+
+          if (allMessages.length > 0) {
+             util.setSuccess(200, 'Messages retrieved', messagePageToSend);
+          } else {
+             util.setSuccess(200, 'No messages found');
+          }
+          return util.send(response);
+       } catch (error) {
+         console.log(error);
+         util.setError(400, error);
+         return util.send(response);
+       }
+     };
 
     static async getAllMessages(request, response) {
         try {

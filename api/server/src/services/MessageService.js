@@ -1,9 +1,27 @@
 import Sequelize from 'sequelize';
 import database from '../models';
-// import UploadFileService from "./UploadFileService";
-// const UploadFile = database.UploadFile;
 
 class MessageService {
+
+    static async getPageOfMessages() {
+      return database.Message.findAll(
+      {
+          order: Sequelize.col('createdAt'),
+          include: [
+            {
+              model: database.User,
+              as: 'userData'
+            },
+            {
+              model: database.UploadFile,
+            },
+          ]
+        }
+      );
+    }
+
+
+
     static async getAllMessages() {
             return database.Message.findAll(
               {
