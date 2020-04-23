@@ -21,7 +21,7 @@ class MessageController {
           // console.info('All messages ---', allMessages);
           const page = parseInt(request.query.page, 10) || 1;
 
-          console.info('PAGE!', page);
+          // console.info('PAGE!', page);
           const pageSize = Number(process.env.PAGE_SIZE);
           const pager = paginate(allMessages.length, page, pageSize);
 
@@ -30,7 +30,7 @@ class MessageController {
           pageOfMessages.reverse();
 
           const messagePageToSend = { pager, pageOfMessages};
-          console.info('Page of messages', messagePageToSend);
+          // console.info('Page of messages', messagePageToSend);
 
           if (allMessages.length > 0) {
              util.setSuccess(200, 'Messages retrieved', messagePageToSend);
