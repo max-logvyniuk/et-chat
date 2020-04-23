@@ -11,7 +11,7 @@ export default async function CheckToken(request, response, next) {
   console.info('CCCCCCCCCCCC!!!!!', request.query, typeof request.body.UserId );
   console.info('Token and current', headerAuth, currentToken );
   if (process.env.USE_TOKEN_CHEKING !== 'off') {
-    if (request.query.user !== '200') {
+    if (request.query.user !== '200' || !request.query.user ) {
       if (headerAuth&& isEmpty(currentToken) || headerAuth !== currentToken.current) {
         const token = _split(headerAuth, ' ')[1];
         const payload = await fetch("https://security-system-auth.herokuapp.com/api/verifying/user" ,{
