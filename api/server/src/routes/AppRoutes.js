@@ -30,7 +30,8 @@ router.route('/messages/page')
   .get(MessageController.getPageOfMessages);
 
 router.route('/messages')
-  .get(MessageController.getAllMessages);
+  .get(MessageController.getAllMessages)
+  .delete(MessageController.deleteAllMessages);
 
 router.route('/message')
   .post(MessageController.addMessage);

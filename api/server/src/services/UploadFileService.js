@@ -42,6 +42,12 @@ class UploadFileService {
             }
             return null;
     }
+
+    static async deleteAllFiles() {
+      const allFileDeleted = await database.UploadFile.destroy({ truncate: true });
+      console.info('UploadFile', allFileDeleted);
+      return allFileDeleted;
+    }
 }
 
 export default UploadFileService;

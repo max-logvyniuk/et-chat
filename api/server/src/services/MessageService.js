@@ -75,6 +75,16 @@ class MessageService {
             }
             return null;
     }
+
+  static async deleteAllMessages() {
+      const allDeleted = await database.Message.destroy({ truncate: true });
+      console.info('allMessagesDeleted', allDeleted);
+    // eslint-disable-next-line no-restricted-globals
+      if (isNaN(allDeleted)) {
+        return true
+      }
+      return null;
+  }
 }
 
 export default MessageService;

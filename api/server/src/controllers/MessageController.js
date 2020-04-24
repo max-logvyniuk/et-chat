@@ -6,6 +6,7 @@ import MessageService from '../services/MessageService';
 import Util from '../utils/Utils';
 import sendMessageToQueue from '../mailer/sendMessageToQueue';
 import configJson from "../config/config";
+import UploadFileService from '../services/UploadFileService';
 
 const environment = process.env.NODE_ENV || 'development';
 const config = configJson[environment];
@@ -198,6 +199,29 @@ class MessageController {
             return util.send(response);
         }
     }
+
+  static async deleteAllMessages(request, response) {
+    // console.info('deleteAllMessages', request);
+    // const io = request.app.get('socketio');
+
+    try {
+      await UploadFileService.deleteAllFiles();
+      const deleteSuccess = await MessageService.deleteAllMessages();
+      console.info('deleteAllMessages', deleteSuccess);
+      if (deleteSuccess) {
+        util.setSuccess(200, 'Messages deleted');
+      } else {
+        util.setError(404, `Messages cannot be deleted`);
+      }
+      // console.info('Delete IO', io.emit('SERVER:REMOVE_MESSAGE', id));
+      // io.emit('SERVER:REMOVE_MESSAGE', deleteSuccess);
+      return util.send(response);
+    } catch (error) {
+      console.info('deleteAllMessages ERROR', error);
+      util.setError(400, error);
+      return util.send(response);
+    }
+  }
 }
 
 

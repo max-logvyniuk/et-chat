@@ -1,6 +1,7 @@
 import UploadFileService from '../services/UploadFileService';
 import Util from '../utils/Utils';
 import cloudinary from '../core/cloudinary';
+import MessageService from "../services/MessageService";
 
 const util = new Util();
 
@@ -62,6 +63,22 @@ class UploadFileController {
       return util.send(response);
     } catch (error) {
       console.info('Delete file error', error);
+      util.setError(400, error);
+      return util.send(response);
+    }
+  }
+
+  static async deleteAllUploadFiles(request, response) {
+
+    try {
+      const deleteSuccess = await MessageService.deleteAllUploadFiles();
+      if (deleteSuccess) {
+        util.setSuccess(200, 'UploadFiles deleted');
+      } else {
+        util.setError(404, `UploadFiles cannot be deleted`);
+      }
+      return util.send(response);
+    } catch (error) {
       util.setError(400, error);
       return util.send(response);
     }
