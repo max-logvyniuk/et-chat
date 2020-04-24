@@ -1,6 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
 
 import UserService from '../services/UserService';
+import MessageService from '../services/MessageService';
 import Util from '../utils/Utils';
 
 const util = new Util();
@@ -106,8 +107,9 @@ class UserController {
         }
 
         try {
-            const messageToDelete = await UserService.deleteUser(id);
-            if (messageToDelete) {
+            await MessageService.deleteAllUserMessages(id);
+            const userToDelete = await UserService.deleteUser(id);
+            if (userToDelete) {
                 util.setSuccess(200, 'User deleted');
             } else {
                 util.setError(404, `User with the id ${id} cannot be found`);

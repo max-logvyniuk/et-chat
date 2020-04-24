@@ -76,15 +76,30 @@ class MessageService {
             return null;
     }
 
-  static async deleteAllMessages() {
-      const allDeleted = await database.Message.destroy({ truncate: true });
-      console.info('allMessagesDeleted', allDeleted);
-    // eslint-disable-next-line no-restricted-globals
-      if (isNaN(allDeleted)) {
+    static async deleteAllUserMessages(UserId) {
+      const allUserMessagesDeleted = await database.Message.destroy({
+        where: { UserId },
+        });
+      console.info('allUserMessagesDeleted', allUserMessagesDeleted);
+      // eslint-disable-next-line no-restricted-globals
+      if (allUserMessagesDeleted) {
+        await database.UploadFile.destroy({
+          where: { UserId },
+        });
         return true
       }
       return null;
-  }
+    }
+
+     static async deleteAllMessages() {
+         const allDeleted = await database.Message.destroy({ truncate: true });
+         console.info('allMessagesDeleted', allDeleted);
+       // eslint-disable-next-line no-restricted-globals
+         if (isNaN(allDeleted)) {
+           return true
+         }
+         return null;
+     }
 }
 
 export default MessageService;
