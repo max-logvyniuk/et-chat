@@ -23,7 +23,7 @@ router.route('/user')
 
 router.route('/user/:id')
   .get(UserController.getUserById)
-  .put(UserController.updatedUser)
+  .patch(UserController.updatedUser)
   .delete(UserController.deleteUser);
 
 router.route('/messages/page')
