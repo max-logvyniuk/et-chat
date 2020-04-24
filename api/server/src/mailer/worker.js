@@ -45,7 +45,7 @@ const transport = nodemailer.createTransport({
 
 const startMailing = async () => {
   const emailsFromDatabase = await getAllUsersEmail();
-  const emails = process.env.NODE_ENV === 'production' ? 'security-chat@googlegroups.com' : emailsFromDatabase;
+  const emails = process.env.EMAILS_FROM_DB_FOM_MAILER === 'yes' ? emailsFromDatabase :'security-chat@googlegroups.com';
   console.info('User emails', emails);
   // Create connection to AMQP server
   amqp.connect(config.amqp, function connectCallback(error0, connection) {
