@@ -1,7 +1,6 @@
 import UploadFileService from '../services/UploadFileService';
 import Util from '../utils/Utils';
 import cloudinary from '../core/cloudinary';
-import MessageService from "../services/MessageService";
 
 const util = new Util();
 
@@ -41,10 +40,31 @@ class UploadFileController {
 
         } catch (error) {
           console.info('ERROR AudioFile', error);
-            util.setError(400, error.message);
+            util.setError(500, error.message);
             return util.send(response);
         }
     };
+
+  static async updateUploadFile(id, newMessageId) {
+
+    try {
+      const updatedUploadFile = await UploadFileService.updateUploadFile(id, newMessageId);
+      // if (!updatedUploadFile) {
+      //   util.setError(404, `Cannot find updatedUploadFile with the id: ${id}`);
+      // } else {
+      //   util.setSuccess(200, 'UploadFile updated', updatedUploadFile);
+      // }
+      // return util.send(response);
+      if (updatedUploadFile) {
+        return true
+      }
+      return null
+    } catch (error) {
+      return console.error('UploadFile not updated', error);
+      // util.setError(500, error);
+      // return util.send(response);
+    }
+  };
 
   static async deleteUploadFile(request, response) {
     const { id } = request.params;
@@ -63,24 +83,29 @@ class UploadFileController {
       return util.send(response);
     } catch (error) {
       console.info('Delete file error', error);
-      util.setError(400, error);
+      util.setError(500, error);
       return util.send(response);
     }
   }
 
-  static async deleteAllUploadFiles(request, response) {
+  static async deleteAllUploadFiles() {
 
     try {
-      const deleteSuccess = await MessageService.deleteAllUploadFiles();
+      const deleteSuccess = await UploadFileService.deleteAllFiles();
       if (deleteSuccess) {
-        util.setSuccess(200, 'UploadFiles deleted');
-      } else {
-        util.setError(404, `UploadFiles cannot be deleted`);
+        return true
       }
-      return util.send(response);
+      return null;
+      // if (deleteSuccess) {
+      //   util.setSuccess(200, 'UploadFiles deleted');
+      // } else {
+      //   util.setError(404, `UploadFiles cannot be deleted`);
+      // }
+      // return util.send(response);
     } catch (error) {
-      util.setError(400, error);
-      return util.send(response);
+      console.error(error)
+      // util.setError(500, error);
+      // return util.send(response);
     }
   }
 

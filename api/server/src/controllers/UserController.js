@@ -20,7 +20,7 @@ class UserController {
           return util.send(response);
         } catch (error) {
           console.log(error);
-            util.setError(400, error);
+            util.setError(500, error);
             return util.send(response);
         }
     };
@@ -47,7 +47,7 @@ class UserController {
 
         } catch (error) {
           console.info(error);
-            util.setError(400, error.message);
+            util.setError(500, error.message);
             return util.send(response);
         }
     };
@@ -69,7 +69,7 @@ class UserController {
             }
             return util.send(response);
         } catch (error) {
-            util.setError(404, error);
+            util.setError(500, error);
             return util.send(response);
         }
     };
@@ -93,13 +93,14 @@ class UserController {
             }
             return util.send(response);
         } catch (error) {
-            util.setError(404, error);
+            util.setError(500, error);
             return util.send(response);
         }
     };
 
     static async deleteUser(request, response) {
-        const { id } = request.params;
+      const io = request.app.get('socketio');
+      const { id } = request.params;
 
         if (!Number(id)) {
             util.setError(400, 'Please provide a numeric value');
@@ -114,9 +115,10 @@ class UserController {
             } else {
                 util.setError(404, `User with the id ${id} cannot be found`);
             }
+            io.emit('SERVER:REMOVE_MESSAGE', id);
             return util.send(response);
         } catch (error) {
-            util.setError(400, error);
+            util.setError(500, error);
             return util.send(response);
         }
     }

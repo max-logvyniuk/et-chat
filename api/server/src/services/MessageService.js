@@ -6,7 +6,10 @@ class MessageService {
     static async getPageOfMessages() {
       return database.Message.findAll(
       {
-          order: Sequelize.col('createdAt'),
+          order: [
+            ['createdAt', 'DESC'],
+          ],
+        // order: Sequelize.col('createdAt'),
           include: [
             {
               model: database.User,
@@ -39,8 +42,29 @@ class MessageService {
             );
     }
 
+    // static async addMessage(newMessage) {
+    //         return database.Message.create(newMessage);
+    // }
+
     static async addMessage(newMessage) {
-            return database.Message.create(newMessage);
+      const freshMessage = await database.Message.create(newMessage);
+      if (freshMessage) {
+        const freshMessageWithUserData = await database.Message.findOne({
+          where: { id: Number(freshMessage.id) },
+          include: [
+            {
+              model: database.User,
+              as: 'userData'
+            },
+            {
+              model: database.UploadFile,
+            },
+          ]
+        });
+        console.info('freshMessageWithUserData', freshMessageWithUserData);
+        return freshMessageWithUserData;
+      }
+
     }
 
     static async updateMessage(id, updateMessage) {
@@ -58,7 +82,16 @@ class MessageService {
 
     static async getAMessage(id) {
             const theMessage = await database.Message.findOne({
-                where: { id: Number(id) }
+              where: { id: Number(id) },
+              include: [
+                {
+                  model: database.User,
+                  as: 'userData'
+                },
+                {
+                  model: database.UploadFile,
+                },
+              ]
             });
 
             return theMessage;
@@ -81,7 +114,6 @@ class MessageService {
         where: { UserId },
         });
       console.info('allUserMessagesDeleted', allUserMessagesDeleted);
-      // eslint-disable-next-line no-restricted-globals
       if (allUserMessagesDeleted) {
         await database.UploadFile.destroy({
           where: { UserId },

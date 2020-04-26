@@ -8,15 +8,18 @@ class UploadFileService {
             return database.UploadFile.create(newUploadFile);
     }
 
-    static async updateUploadFile(id, updateUploadFile) {
+    static async updateUploadFile(id, newMessageId) {
       const uploadFileToUpdate = await database.UploadFile.findOne({
         where: { id: Number(id) }
       });
 
       if (uploadFileToUpdate) {
-        await database.UploadFile.update(updateUploadFile, { where: { id: Number(id) } });
+        await database.UploadFile.update(
+          {MessageId: newMessageId},
+          {where: { id: Number(id)}
+          });
 
-        return updateUploadFile;
+        return true;
      }
      return null;
   }
@@ -44,6 +47,7 @@ class UploadFileService {
     }
 
     static async deleteAllFiles() {
+      // Do deleting all file from cloudinary
       const allFileDeleted = await database.UploadFile.destroy({ truncate: true });
       console.info('UploadFile', allFileDeleted);
       return allFileDeleted;

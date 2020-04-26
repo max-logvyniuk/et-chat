@@ -9,17 +9,6 @@ module.exports = {
   // },
 
   development: {
-    // amqp: {
-    //   protocol: 'amqp',
-    //   hostname: 'localhost',
-    //   port: 5672,
-    //   username: 'guest',
-    //   password: 'guest',
-    //   locale: 'en_US',
-    //   frameMax: 1000,
-    //   heartbeat: 0,
-    //   vhost: '/',
-    // },
     environment:process.env.NODE_ENV,
     amqp: process.env.CLOUDAMQP_URL,
     queue: 'nodemailer-amqp',

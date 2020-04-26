@@ -1,12 +1,11 @@
 import isEmpty from 'lodash/isEmpty';
 import paginate from 'jw-paginate';
 
-import database from '../models';
 import MessageService from '../services/MessageService';
 import Util from '../utils/Utils';
 import sendMessageToQueue from '../mailer/sendMessageToQueue';
 import configJson from "../config/config";
-import UploadFileService from '../services/UploadFileService';
+import UploadFileController from './UploadFileController';
 
 const environment = process.env.NODE_ENV || 'development';
 const config = configJson[environment];
@@ -17,8 +16,9 @@ class MessageController {
 
      static async getPageOfMessages(request, response) {
         try {
-          const messagesArray = await MessageService.getAllMessages();
-          const allMessages = messagesArray.reverse();
+          // const messagesArray = await MessageService.getPageOfMessages();
+          // const allMessages = messagesArray.reverse();
+          const allMessages = await MessageService.getPageOfMessages();
           // console.info('All messages ---', allMessages);
           const page = parseInt(request.query.page, 10) || 1;
 
@@ -26,6 +26,7 @@ class MessageController {
           const pageSize = Number(process.env.PAGE_SIZE);
           const pager = paginate(allMessages.length, page, pageSize);
 
+          // const pageOfMessages = allMessages.slice(pager.startIndex, pager.endIndex + 1);
           const pageOfMessages = allMessages.slice(pager.startIndex, pager.endIndex + 1);
 
           pageOfMessages.reverse();
@@ -41,7 +42,7 @@ class MessageController {
           return util.send(response);
        } catch (error) {
          console.log(error);
-         util.setError(400, error);
+         util.setError(500, error);
          return util.send(response);
        }
      };
@@ -58,14 +59,13 @@ class MessageController {
           return util.send(response);
         } catch (error) {
           console.log(error);
-            util.setError(400, error);
+            util.setError(500, error);
             return util.send(response);
         }
     };
 
     static async addMessage(request, response) {
         const io = request.app.get('socketio');
-
         // console.info('In new message', request.body);
         if (
           !request.body.UserId &&
@@ -86,7 +86,7 @@ class MessageController {
           }
           catch (error) {
             console.info(error);
-            util.setError(400, error.message);
+            util.setError(500, error.message);
             return util.send(response);
           }
         }
@@ -96,16 +96,26 @@ class MessageController {
           if (request.body.UploadFileId) {
             const newMessageId = createdMessage.id;
             const id = request.body.UploadFileId;
-            await database.UploadFile.findOne({
-              where: { id: Number(id) }
-            });
-            // console.info('Before Update File in message', uploadFileToUpdate);
-            // console.info('newMessageId', newMessageId);
-            await database.UploadFile.update(
-              // uploadFileToUpdate,
-              {MessageId: newMessageId},
-              {where: { id: Number(id)}
-              });
+            await UploadFileController.updateUploadFile(id, newMessageId);
+            const createdMessageWithUploadFile = await MessageService.getAMessage(newMessageId);
+            util.setSuccess(201, 'Message Added!', createdMessage);
+            // console.info('New message', createdMessage.id);
+            io.emit('SERVER:NEW_MESSAGE', createdMessageWithUploadFile);
+
+            return util.send(response);
+
+            // Replace in UploadFileService and use UploadFileController
+            // await database.UploadFile.findOne({
+            //   where: { id: Number(id) }
+            // });
+            // // console.info('Before Update File in message', uploadFileToUpdate);
+            // // console.info('newMessageId', newMessageId);
+            // // Replace in UploadFileService and use UploadFileController
+            // await database.UploadFile.update(
+            //   // uploadFileToUpdate,
+            //   {MessageId: newMessageId},
+            //   {where: { id: Number(id)}
+            //   });
             // console.info('Updated File in message', uploadFileToUpdate);
           }
             util.setSuccess(201, 'Message Added!', createdMessage);
@@ -116,7 +126,7 @@ class MessageController {
 
         } catch (error) {
           console.info(error);
-            util.setError(400, error.message);
+            util.setError(500, error.message);
             return util.send(response);
         }
     };
@@ -142,7 +152,7 @@ class MessageController {
             io.emit('SERVER:UPDATE_MESSAGE', updateMessage);
             return util.send(response);
         } catch (error) {
-            util.setError(404, error);
+            util.setError(500, error);
             return util.send(response);
         }
     };
@@ -169,7 +179,7 @@ class MessageController {
             io.emit('SERVER:NEW_MESSAGE', theMessage);
             return util.send(response);
         } catch (error) {
-            util.setError(404, error);
+            util.setError(500, error);
             return util.send(response);
         }
     };
@@ -195,33 +205,33 @@ class MessageController {
             io.emit('SERVER:REMOVE_MESSAGE', id);
             return util.send(response);
         } catch (error) {
-            util.setError(400, error);
+            util.setError(500, error);
             return util.send(response);
         }
     }
 
-  static async deleteAllMessages(request, response) {
-    // console.info('deleteAllMessages', request);
-    // const io = request.app.get('socketio');
+    static async deleteAllMessages(request, response) {
+      // console.info('deleteAllMessages', request);
+      const io = request.app.get('socketio');
 
-    try {
-      await UploadFileService.deleteAllFiles();
-      const deleteSuccess = await MessageService.deleteAllMessages();
-      console.info('deleteAllMessages', deleteSuccess);
-      if (deleteSuccess) {
-        util.setSuccess(200, 'Messages deleted');
-      } else {
-        util.setError(404, `Messages cannot be deleted`);
+      try {
+        await UploadFileController.deleteAllUploadFiles();
+        const deleteSuccess = await MessageService.deleteAllMessages();
+        console.info('deleteAllMessages', deleteSuccess);
+        if (deleteSuccess) {
+          util.setSuccess(200, 'Messages deleted');
+        } else {
+          util.setError(404, `Messages cannot be deleted`);
+        }
+        // console.info('Delete IO', io.emit('SERVER:REMOVE_MESSAGE', id));
+        io.emit('SERVER:REMOVE_MESSAGE', deleteSuccess);
+        return util.send(response);
+      } catch (error) {
+        console.info('deleteAllMessages ERROR', error);
+        util.setError(500, error);
+        return util.send(response);
       }
-      // console.info('Delete IO', io.emit('SERVER:REMOVE_MESSAGE', id));
-      // io.emit('SERVER:REMOVE_MESSAGE', deleteSuccess);
-      return util.send(response);
-    } catch (error) {
-      console.info('deleteAllMessages ERROR', error);
-      util.setError(400, error);
-      return util.send(response);
     }
-  }
 }
 
 
