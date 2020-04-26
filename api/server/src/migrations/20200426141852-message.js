@@ -4,8 +4,8 @@ module.exports = {
       'Messages',
       'read',
       {
-        type: Sequelize.BOOL,
-        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
       }
     )
   },
