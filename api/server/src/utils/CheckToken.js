@@ -8,6 +8,7 @@ const currentToken = {
 
 export default async function CheckToken(request, response, next) {
   const headerAuth = request.headers.authorization;
+  // request.body.set('currentUser', headerAuth);
   // console.info('Request.query!!!!!', request.query, request.headers);
   console.info('Token and current', headerAuth, currentToken );
 

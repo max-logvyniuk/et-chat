@@ -3,13 +3,16 @@ import database from '../models';
 
 class MessageService {
 
+    static async updateMessagesStatus() {
+       return database.Message.update({read: true}, {where: {read: false}} )
+    }
+
     static async getPageOfMessages() {
       return database.Message.findAll(
       {
           order: [
             ['createdAt', 'DESC'],
           ],
-        // order: Sequelize.col('createdAt'),
           include: [
             {
               model: database.User,
@@ -22,8 +25,6 @@ class MessageService {
         }
       );
     }
-
-
 
     static async getAllMessages() {
             return database.Message.findAll(
@@ -61,7 +62,7 @@ class MessageService {
             },
           ]
         });
-        console.info('freshMessageWithUserData', freshMessageWithUserData);
+        // console.info('freshMessageWithUserData', freshMessageWithUserData);
         return freshMessageWithUserData;
       }
 

@@ -1,5 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
 import paginate from 'jw-paginate';
+import get from 'lodash/get';
 
 import MessageService from '../services/MessageService';
 import Util from '../utils/Utils';
@@ -15,13 +16,20 @@ const util = new Util();
 class MessageController {
 
      static async getPageOfMessages(request, response) {
-        try {
+       const io = request.app.get('socketio');
+       const currentPage = request.query.page || 1;
+       console.info('REQUEST page#!!!!', request.query);
+       try {
+          if (Number(currentPage) === 1 || isEmpty(currentPage)) {
+            const updatedMessages = await MessageService.updateMessagesStatus();
+            console.info('IN PAGE updatedMessages!!!!!', updatedMessages);
+            io.emit('SERVER:UPDATE_READ_STATUS');
+          }
           // const messagesArray = await MessageService.getPageOfMessages();
           // const allMessages = messagesArray.reverse();
           const allMessages = await MessageService.getPageOfMessages();
           // console.info('All messages ---', allMessages);
-          const page = parseInt(request.query.page, 10) || 1;
-
+          const page = parseInt(currentPage, 10) || 1;
           // console.info('PAGE!', page);
           const pageSize = Number(process.env.PAGE_SIZE);
           const pager = paginate(allMessages.length, page, pageSize);
@@ -48,7 +56,10 @@ class MessageController {
      };
 
     static async getAllMessages(request, response) {
+        const io = request.app.get('socketio');
         try {
+            const updatedMessages = await MessageService.updateMessagesStatus();
+            console.info('updatedMessages!!!!!', updatedMessages);
             const allMessages = await MessageService.getAllMessages();
             // console.info('All messages ---', allMessages);
             if (allMessages.length > 0) {
@@ -56,6 +67,7 @@ class MessageController {
             } else {
                 util.setSuccess(200, 'No messages found');
             }
+          io.emit('SERVER:UPDATE_READ_STATUS');
           return util.send(response);
         } catch (error) {
           console.log(error);
@@ -67,6 +79,7 @@ class MessageController {
     static async addMessage(request, response) {
         const io = request.app.get('socketio');
         // console.info('In new message', request.body);
+
         if (
           !request.body.UserId &&
           isEmpty(request.body.text) &&
@@ -74,6 +87,20 @@ class MessageController {
         ) {
             util.setError(400, 'Please provide complete details');
             return util.send(response);
+        }
+
+        if (request.headers.lastmessage) {
+          const lastMessageId = request.headers.lastmessage || 1;
+          const lastMessageUser = await MessageService.getAMessage(lastMessageId);
+          console.info('!!!!!!lastMessage', lastMessageId, lastMessageUser.UserId, request.body.UserId);
+          if (get(lastMessageUser, 'UserId', '1') !== request.body.UserId) {
+            console.info('Update status++++');
+            await MessageService.updateMessagesStatus();
+            // if (!request.body.UploadFileId) {
+            //   io.emit('SERVER:UPDATE_READ_STATUS')
+            // }
+            io.emit('SERVER:UPDATE_READ_STATUS')
+          }
         }
 
         const newMessage = request.body;
@@ -101,22 +128,9 @@ class MessageController {
             util.setSuccess(201, 'Message Added!', createdMessage);
             // console.info('New message', createdMessage.id);
             io.emit('SERVER:NEW_MESSAGE', createdMessageWithUploadFile);
+            // io.emit('SERVER:UPDATE_READ_STATUS');
 
             return util.send(response);
-
-            // Replace in UploadFileService and use UploadFileController
-            // await database.UploadFile.findOne({
-            //   where: { id: Number(id) }
-            // });
-            // // console.info('Before Update File in message', uploadFileToUpdate);
-            // // console.info('newMessageId', newMessageId);
-            // // Replace in UploadFileService and use UploadFileController
-            // await database.UploadFile.update(
-            //   // uploadFileToUpdate,
-            //   {MessageId: newMessageId},
-            //   {where: { id: Number(id)}
-            //   });
-            // console.info('Updated File in message', uploadFileToUpdate);
           }
             util.setSuccess(201, 'Message Added!', createdMessage);
             // console.info('New message', createdMessage.id);
