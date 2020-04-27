@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     UploadFileId: DataTypes.STRING,
     text: DataTypes.STRING,
     imageAttachment: DataTypes.STRING,
-    // read: DataTypes.BOOLEAN
+    read: DataTypes.BOOLEAN
   }, {});
 
 
