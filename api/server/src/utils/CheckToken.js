@@ -8,8 +8,6 @@ const currentToken = {
 
 export default async function CheckToken(request, response, next) {
   const headerAuth = request.headers.authorization;
-  // request.body.set('currentUser', headerAuth);
-  // console.info('Request.query!!!!!', request.query, request.headers);
   console.info('Token and current', headerAuth, currentToken );
 
   if (process.env.USE_TOKEN_CHEKING !== 'off' && !request.headers.uploadfile) {
@@ -23,13 +21,11 @@ export default async function CheckToken(request, response, next) {
             Authorization: `Bearer ${token}`,
           }
         });
-        // console.info('Auth response', payload);
         if (payload.status === 401) {
           console.info('NOT VERIFIED');
           return response.status(401).json({message: 'NOT VERIFIED'})
         }
         currentToken.current = token;
-        // return response.status(200).json({message: 'VERIFIED'});
       }
     }
   }

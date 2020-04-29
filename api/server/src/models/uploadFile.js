@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
 
-  UploadFile.associate = function(models) {
+  UploadFile.associate = function createUploadFileAssociation(models) {
     UploadFile.belongsTo(models.Message);
     UploadFile.belongsTo(models.User, {foreignKey: 'UserId', as: 'userAttachmentData'})
   };

@@ -7,31 +7,26 @@ const config = configJson[environment];
 
 async function sendMessageToQueue(data) {
 
-  amqp.connect(config.amqp, function(error0, connection) {
-    if (error0) {
-      console.error('Errror0', error0);
-      throw error0;
+  amqp.connect(config.amqp, function connectToQueue(errorConnectToQueue, connection) {
+    if (errorConnectToQueue) {
+      console.error('errorConnectToQueue', errorConnectToQueue);
+      throw errorConnectToQueue;
     }
-    console.info('SendToQ connected1');
-    connection.createChannel(function(error1, channel) {
-      if (error1) {
-        console.error('error1',error1.stack);
-        throw error1;
+    connection.createChannel(function createChannel(errorCreateChannel, channel) {
+      if (errorCreateChannel) {
+        console.error('errorCreateChannel',errorCreateChannel.stack);
+        throw errorCreateChannel;
       }
-      console.info('SendToQ channel2');
       channel.assertQueue(config.queue, {
         durable: true
       });
-      console.info('SendToQ assertQueue 3');
       channel.sendToQueue(config.queue, Buffer.from(JSON.stringify(data)), {
         persistent: true
       });
-      console.log(" [x] Sent '%s'", data);
+      console.info(" [x] Sent '%s'", data);
     });
-    setTimeout(function() {
+    setTimeout(function closeConnection() {
       connection.close();
-
-      // process.exit(0)
     }, 500);
   });
 }

@@ -4,7 +4,6 @@ import MessageController from '../controllers/MessageController';
 
 const messageRouter = Router();
 
-
 messageRouter.route('/')
   .post(MessageController.addMessage);
 

@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
 
-  Message.associate = function(models) {
+  Message.associate = function createMessageAssociation(models) {
     Message.belongsTo(models.User, {foreignKey: 'UserId', as: 'userData'});
     Message.hasOne(models.UploadFile)
   };

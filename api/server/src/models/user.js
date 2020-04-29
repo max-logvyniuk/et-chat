@@ -5,12 +5,9 @@ module.exports = (sequelize, DataTypes) => {
     avatar: DataTypes.STRING
   }, {});
 
-  User.associate = function (models) {
+  User.associate = function createUserAssociation(models) {
     User.hasMany(models.Message, {as: 'userMessages'});
     User.hasMany(models.UploadFile, {as: 'userUploadFiles'})
   };
-  // User.associate = function (models) {
-  //   User.hasMany(models.UploadFile, {as: 'userUploadFiles'})
-  // };
   return User;
 };
