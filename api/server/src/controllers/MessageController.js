@@ -141,7 +141,6 @@ class MessageController {
   };
 
   static async getMessageById(request, response) {
-      // const io = request.app.get('socketio');
     const { id } = request.params;
 
     if (!Number(id)) {
@@ -157,7 +156,6 @@ class MessageController {
       } else {
         util.setSuccess(200, 'Found Message', theMessage);
       }
-        // io.emit('SERVER:NEW_MESSAGE', theMessage);
       return util.send(response);
     } catch (error) {
       util.setError(500, error);

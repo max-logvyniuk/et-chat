@@ -6,7 +6,6 @@ const createSocket = (http) => {
   io.on('connection', function socketConnect(currentSocket) {
     console.info('SOCKET Connected!');
     currentSocket.on('SERVER:IS_TYPING', (currentUserData) => {
-      console.info('currentUserData', currentUserData);
       io.emit('SERVER:IS_TYPING', currentUserData)
     });
   });
